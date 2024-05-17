@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('includes/head', {title: 'Log-in'}) %>
+        <link rel="stylesheet" href="/styles/sign-up-and-log-in.css" />
+    </head>
+    <body>
+        <header class="header">
+            <ul class="normal-font header-action-buttons-list">
+                <li class="header-action-button"><a href="">Home</a></li>
+                <li class="header-action-button"><a href="">Sign-up</a></li>
+                <li class="header-action-button"><a href="">Log-in</a></li>
+            </ul>
+        </header>
+        <main>
+            <div class="box-shadow form-container">
+                <h1 class="topic-font">Log-in</h1>
+                <form class="input-form" action="" method="POST">
+                    <ul class="input-form-list">
+                        <li>
+                            <label class="input-label topic-font" for="email"
+                                >Email</label
+                            >
+                            <input
+                                type="email"
+                                class="text-input"
+                                name="email"
+                                id="email"
+                                required
+                            />
+                        </li>
+                        <li>
+                            <label
+                                class="input-label topic-font"
+                                for="password"
+                            >
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                class="text-input"
+                                name="password"
+                                id="password"
+                                required
+                            />
+                        </li>
+                        <li class="action-container">
+                            <button class="normal-font">Confirm</button>
+                            <a class="normal-font" href="">Sign-up instead</a>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

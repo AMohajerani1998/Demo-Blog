@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('includes/head', {title: 'New post'}) %>
+        <link rel="stylesheet" href="/styles/new-post.css" />
+    </head>
+    <body>
+        <header class="header">
+            <ul class="normal-font header-action-buttons-list">
+                <li class="header-action-button"><a href="">Home</a></li>
+                <li class="header-action-button"><a href="">Sign-up</a></li>
+                <li class="header-action-button"><a href="">Log-in</a></li>
+            </ul>
+        </header>
+        <main>
+            <div class="form-container">
+                <h1 class="topic-font">New Post</h1>
+                <form class="input-form" action="" method="POST">
+                    <ul class="input-form-list">
+                        <li>
+                            <label class="input-label topic-font" for="title"
+                                >Title</label
+                            >
+                            <input
+                                type="text"
+                                class="text-input"
+                                name="title"
+                                id="title"
+                                required
+                            />
+                        </li>
+                        <li>
+                            <label
+                                class="input-label topic-font"
+                                for="email-confirm"
+                                >Cornfirm email</label
+                            >
+                            <textarea
+                                class="text-input"
+                                name="content"
+                                id="content"
+                                cols="8"
+                            ></textarea>
+                        </li>
+                        <li class="action-container">
+                            <button class="normal-font">Save</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div class="form-container">
+                <h1 class="topic-font">All Blog Posts</h1>
+                <p class="normal-font">
+                    Could not find any posts. Try posting some content!
+                </p>
+                <div class="box-shadow post-box">
+                    <h1 class="topic-font">
+                        First post
+                    </h1>
+                    <div class="action-container">
+                        <a class="normal-font">View & Edit</a>
+                        <form action="" method="POST">
+                            <button>Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
