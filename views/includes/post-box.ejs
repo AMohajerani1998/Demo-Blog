@@ -1,0 +1,11 @@
+<div class="box-shadow post-box">
+    <h1 class="topic-font">
+        <%= post.title %>
+    </h1>
+    <div class="action-container">
+        <a href="/posts/<%= post._id %>/edit" class="normal-font">View & Edit</a>
+        <form action="" method="POST">
+            <button id="delete-button">Delete</button>
+        </form>
+    </div>
+</div>

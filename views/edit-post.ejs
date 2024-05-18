@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('includes/head', {title: 'Edit post', csrfToken:locals.csrfToken}) %>
+        <link rel="stylesheet" href="/styles/new-post.css" />
+    </head>
+    <body>
+        <%- include('includes/header') %>
+        <main>
+            <div class="form-container">
+                <h1 class="topic-font">Edit post</h1>
+                <%- include('includes/new-post-form', {
+                    postAction:`/posts/${postId}/edit`, inputData:inputData
+                }) %>
+            </div>
+        </main>
+    </body>
+</html>

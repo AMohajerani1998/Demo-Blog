@@ -3,6 +3,9 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const db = require("../data/database");
 
+const mongodb = require("mongodb");
+const ObjectId = mongodb.ObjectId;
+
 router.get("/", function (req, res) {
     res.render("home");
 });
@@ -76,12 +79,12 @@ router.get("/log-in", function (req, res) {
     let inputData = req.session.inputData;
     if (!inputData) {
         inputData = {
-            enteredEmail: '',
-            enteredPassword: ''
-        }
+            enteredEmail: "",
+            enteredPassword: "",
+        };
     }
     req.session.inputData = null;
-    res.render("log-in", {inputData:inputData });
+    res.render("log-in", { inputData: inputData });
 });
 
 router.post("/log-in", async function (req, res) {
@@ -131,20 +134,120 @@ router.post("/log-in", async function (req, res) {
     });
 });
 
-router.get("/posts", function (req, res) {
-    if (!req.session.isAuthenticated){
-        console.log('You are not autheticated to access this page!')
-        return res.status(401).render('401')
+router.get("/posts", async function (req, res) {
+    if (!res.locals.isAuth) {
+        console.log("You are not autheticated to access this page!");
+        return res.status(401).render("401");
     }
-    res.render("posts");
+    let inputData = req.session.inputData;
+    if (!inputData) {
+        inputData = {
+            inputError: false,
+            enteredPostTitle: "",
+            enteredPostContent: "",
+        };
+    }
+    req.session.inputData = null;
+    const posts = await db.getDb().collection("posts").find().toArray();
+    res.render("posts", { inputData: inputData, posts: posts });
 });
 
-router.post('/logout', async function(req, res){
+router.post("/posts", async function (req, res) {
+    const enteredData = req.body;
+    const enteredPostTitle = enteredData.title;
+    const enteredPostContent = enteredData.content;
+    console.log("test");
+    if (
+        !enteredPostTitle ||
+        !enteredPostContent ||
+        enteredPostTitle.trim() === 0 ||
+        enteredPostContent.trim() === 0
+    ) {
+        req.session.inputData = {
+            inputError: true,
+            errorMessage: "Invalid input! Please try again.",
+            enteredPostTitle: enteredPostTitle,
+            enteredPostContent: enteredPostContent,
+        };
+        req.session.save(function () {
+            return es.redirect("/posts");
+        });
+        return;
+    }
+    await db
+        .getDb()
+        .collection("posts")
+        .insertOne({ title: enteredPostTitle, content: enteredPostContent });
+    res.redirect("/posts");
+});
+
+router.get("/posts/:id/edit", async function (req, res) {
+    if (!res.locals.isAuth) {
+        console.log("you are not autheticated to access this page!");
+        res.redirect("/log-in");
+    }
+    let postId;
+    try {
+        postId = new ObjectId(req.params.id);
+    } catch (error) {
+        res.status(404).render("404");
+    }
+    const user = await db.getDb().collection("posts").findOne({ _id: postId });
+    let inputData = req.session.inputData;
+    if (!inputData) {
+        inputData = {
+            enteredPostTitle: user.title,
+            enteredPostContent: user.content,
+        };
+    }
+    req.session.inputData = null;
+    res.render("edit-post", { inputData: inputData, postId:user._id });
+});
+
+router.post("/posts/:id/edit", async function (req, res) {
+    let postId;
+    try {
+        postId = new ObjectId(req.params.id);
+    } catch (error) {
+        res.status(404).render("404");
+    }
+    const enteredData = req.body;
+    const enteredPostTitle = enteredData.title;
+    const enteredPostContent = enteredData.content;
+    console.log("test");
+    if (
+        !enteredPostTitle ||
+        !enteredPostContent ||
+        enteredPostTitle.trim() === 0 ||
+        enteredPostContent.trim() === 0
+    ) {
+        req.session.inputData = {
+            inputError: true,
+            errorMessage: "Invalid input! Please try again.",
+            enteredPostTitle: enteredPostTitle,
+            enteredPostContent: enteredPostContent,
+        };
+        req.session.save(function () {
+            return res.redirect(`/posts/${postId}/edit`);
+        });
+        return;
+    }
+    await db
+        .getDb()
+        .collection("posts")
+        .updateOne(
+            { _id: postId },
+            { $set: { title: enteredPostTitle, content: enteredPostContent } }
+        );
+    res.redirect("/posts");
+});
+
+router.post("/logout", async function (req, res) {
     req.session.isAuthenticated = false;
     req.session.user = null;
-    req.session.save(function(){
-        res.redirect('/log-in')
-    })
-})
+    req.session.save(function () {
+        res.redirect("/log-in");
+    });
+});
 
 module.exports = router;

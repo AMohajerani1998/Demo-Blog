@@ -16,10 +16,3 @@
 .form-container h1 {
     padding-top: 4rem;
 }
-.error-box {
-    background-color: rgb(255 188 188);
-    width: 22rem;
-    padding: 0.5rem 0;
-    box-shadow: 0 0 4px rgb(225, 225, 225);
-    margin: 1rem auto;
-}
