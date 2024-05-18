@@ -7,6 +7,18 @@ function postInputValidation(title, content) {
     );
 }
 
+function userSignUpInputValidation (email, confirmEmail, password){
+    return (
+        password.length &&
+        email &&
+        confirmEmail &&
+        email.includes("@") &&
+        email === confirmEmail
+    )
+}
+
 module.exports = {
     postInputValidation : postInputValidation,
+    userSignUpInputValidation : userSignUpInputValidation,
+
 }
