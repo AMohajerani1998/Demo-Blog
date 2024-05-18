@@ -3,12 +3,14 @@ const path = require("path");
 const express = require("express");
 const db = require("./data/database");
 const session = require("express-session");
-const mongodbStore = require("connect-mongodb-session");
-const mongoDBStore = mongodbStore(session);
-
+const sessionConfig = require('./config/session')
 const csrf = require("csurf");
 
+const authMiddleware = require('./middlewares/auth-middleware')
+const csrfTokenMiddleware = require('./middlewares/csrf-token-middleware')
+
 const postRoutes = require("./routes/posts");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -18,44 +20,18 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const sessionStore = new mongoDBStore({
-    uri: "mongodb://localhost:27017",
-    databaseName: "final-blog",
-    collection: "sessions",
-});
+const mongoDBSessionStore = sessionConfig.createSessionStore(session)
 app.use(
-    session({
-        secret: "super-secret",
-        resave: false,
-        saveUninitialized: false,
-        store: sessionStore,
-        cookie: {
-            maxAge: 30 * 24 * 60 * 68 * 1000,
-            sameSite: "lax",
-        },
-    })
+    session(sessionConfig.createSessionConfig(mongoDBSessionStore))
 );
 
 app.use(csrf());
 
-app.use(async function (req, res, next) {
-    const userData = req.session.user;
-    const isAuth = req.session.isAuthenticated;
-    const csrfToken = req.csrfToken();
-    res.locals.csrfToken = csrfToken;
-    if (!userData || !isAuth) {
-        return next();
-    }
-    const user = await db
-        .getDb()
-        .collection("users")
-        .findOne({ _id: userData.id });
-    const isAdmin = user.isAdmin;
-    res.locals.isAdmin = isAdmin;
-    res.locals.isAuth = isAuth;
-    next();
-});
+app.use(csrfTokenMiddleware)
 
+app.use(authMiddleware);
+
+app.use(authRoutes);
 app.use(postRoutes);
 
 // app.use(function (req, res){
