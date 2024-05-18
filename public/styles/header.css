@@ -1,4 +1,8 @@
 .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     background-color: #271364;
     margin: 0;
 }
@@ -7,7 +11,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    margin: 0;
+    margin: 0 auto;
     color: white;
 }
 .header-action-button {
@@ -16,4 +20,16 @@
 .header-action-button a {
     color: white;
     text-decoration: none;
+}
+#logout-button {
+    margin-right: 1rem;
+}
+#logout-button button {
+    background-color: transparent;
+    color: white;
+    border: none;
+}
+#logout-button button:hover,
+#logout-button button:focus {
+    cursor: pointer;
 }

@@ -1,7 +1,16 @@
 <header class="header">
     <ul class="normal-font header-action-buttons-list">
         <li class="header-action-button"><a href="/">Home</a></li>
+<% if(!locals.isAuth){%>
         <li class="header-action-button"><a href="/sign-up">Sign-up</a></li>
         <li class="header-action-button"><a href="/log-in">Log-in</a></li>
     </ul>
+<% } else { %>
+        <li class="header-action-button"><a href="/posts">View posts</a></li>
+    </ul>
+    <form id="logout-button" action="/logout" method="POST">
+        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+        <button class="normal-font">Logout</button>
+    </form>
+<% } %>
 </header>

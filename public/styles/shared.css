@@ -50,7 +50,6 @@ ul {
     flex-direction: column !important;
 }
 .action-container a {
-    display: block;
     text-decoration: none;
     margin-top: 1rem;
     font-size: 0.9rem;
@@ -76,4 +75,3 @@ ul {
     cursor: pointer;
 }
 /* Sign-up and Log-in */
-
