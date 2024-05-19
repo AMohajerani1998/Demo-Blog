@@ -9,7 +9,7 @@ function postInputValidation(title, content) {
 
 function userSignUpInputValidation (email, confirmEmail, password){
     return (
-        password.length &&
+        password.length >= 6 &&
         email &&
         confirmEmail &&
         email.includes("@") &&

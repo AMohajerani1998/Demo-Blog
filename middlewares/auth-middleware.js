@@ -10,8 +10,8 @@ async function auth(req, res, next) {
         .getDb()
         .collection("users")
         .findOne({ _id: userData.id });
-    const isAdmin = user.isAdmin;
-    res.locals.isAdmin = isAdmin;
+    // const isAdmin = user.isAdmin;
+    // res.locals.isAdmin = isAdmin;
     res.locals.isAuth = isAuth;
     next();
 }

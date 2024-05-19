@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const sessionValidation = require("../util/session-validation");
 const inputValidation = require("../util/input-validation");
@@ -39,9 +38,8 @@ async function createUser(req, res) {
         return;
     }
 
-    const user = new User(enteredEmail);
-    const existingUser = await user.fetch();
-    if (existingUser) {
+    const user = new User(enteredEmail, enteredPassword);
+    if (user.userAlreadyExists()) {
         sessionValidation.flashInputError(
             req,
             {
@@ -56,9 +54,8 @@ async function createUser(req, res) {
         );
         return;
     }
-    const hashedPassword = await bcrypt.hash(enteredPassword, 12);
-    const newUser = new User(enteredEmail, hashedPassword);
-    //await newUser.create();
+    // const newUser = new User(enteredEmail, enteredPassword);
+    await user.create();
     console.log("profile created");
     res.redirect("/log-in");
 }
@@ -75,8 +72,8 @@ async function loginUser(req, res) {
     const userData = req.body;
     const enteredEmail = userData.email;
     const enteredPassword = userData.password;
-    const user = new User(enteredEmail);
-    const existingUser = await user.fetch();
+    const user = new User(enteredEmail, enteredPassword);
+    const existingUser = await user.userAlreadyExists()
     if (!existingUser) {
         sessionValidation.flashInputError(
             req,
@@ -91,10 +88,7 @@ async function loginUser(req, res) {
         );
         return;
     }
-    const passwordCheck = await bcrypt.compare(
-        enteredPassword,
-        existingUser.password
-    );
+    const passwordCheck = await user.checkPassword();
     if (!passwordCheck) {
         req.session.inputData = {
             inputError: true,
@@ -125,10 +119,15 @@ async function logoutUser(req, res) {
     });
 }
 
+function get401(req, res){
+    res.status(401).render('401')
+}
+
 module.exports = {
     loadSignUpPage: loadSignUpPage,
     createUser: createUser,
     loadLoginPage: loadLoginPage,
     loginUser: loginUser,
     logoutUser: logoutUser,
+    get401 : get401
 };

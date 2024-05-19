@@ -38,12 +38,13 @@ async function createPost(req, res) {
     res.redirect("/posts");
 }
 
-async function viewPost(req, res) {
-    if (!res.locals.isAuth) {
-        console.log("you are not autheticated to access this page!");
-        res.redirect("/log-in");
+async function viewPost(req, res, next) {
+    let post;
+    try{
+        post = new Post(null, null, req.params.id);
+    } catch(error){
+        res.status(404).render('404')
     }
-    const post = new Post(null, null, req.params.id);
     await post.fetch();
     if (!post.title || !post.content) {
         res.status(404).render("404");
