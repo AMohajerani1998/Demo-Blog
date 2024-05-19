@@ -22,6 +22,7 @@ class Post {
                 return;
             }
             result = await db.getDb().collection('posts').updateOne({_id: this.id}, {$set: {title: this.title, content: this.content}})
+            return;
         }
         result = await db.getDb().collection('posts').insertOne({title: this.title, content: this.content})
         return result;

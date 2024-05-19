@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/users");
+const User = require("../models/user");
 const sessionValidation = require("../util/session-validation");
 const inputValidation = require("../util/input-validation");
 
